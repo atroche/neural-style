@@ -8,5 +8,5 @@ setup(name='neural_style',
       author_email='roche.a@gmail.com',
       license='MIT',
       packages=['trainer'],
-      install_requires=['numpy', 'Pillow', 'scipy'],
+      install_requires=['numpy', 'Pillow', 'scipy', 'google-cloud-storage'],
       zip_safe=False)

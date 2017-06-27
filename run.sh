@@ -1,14 +1,15 @@
-gcloud ml-engine jobs submit training neural_style_test_6 \
---job-dir gs://wombatflow/jobs/neural_style_test_6 \
+gcloud ml-engine jobs submit training neural_style_test_101 \
+--staging-bucket gs://wombatflow \
 --runtime-version 1.2 \
---module-name neural_style.trainer.neural_style \
+--module-name trainer.neural_style \
 --package-path trainer/ \
 --config config.yml \
 --region $REGION \
 -- \
+--network gs://wombatflow/data/pretrained_nets/imagenet-vgg-verydeep-19.mat \
 --content gs://wombatflow/data/examples/1-content.jpg \
 --styles gs://wombatflow/data/examples/1-style.jpg \
---output gs://wombatflow/data/output/output.jpg
+--output gs://wombatflow/data/output/output.jpg \
 
 
 

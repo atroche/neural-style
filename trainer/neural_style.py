@@ -109,11 +109,12 @@ def main():
     parser = build_parser()
     options = parser.parse_args()
 
-    if not os.path.isfile(options.network):
-        parser.error("Network %s does not exist. (Did you forget to download it?)" % options.network)
+    #
+    # if not os.path.isfile(options.network):
+    #     parser.error("Network %s does not exist. (Did you forget to download it?)" % options.network)
 
-    content_image = imread(options.content)
-    style_images = [imread(style) for style in options.styles]
+    content_image = imread(options.content, "content.jpg")
+    style_images = [imread(style, "style.jpg") for style in options.styles]
 
     width = options.width
     if width is not None:
@@ -187,8 +188,10 @@ def main():
             imsave(output_file, combined_rgb)
 
 
-def imread(path):
-    img = scipy.misc.imread(path).astype(np.float)
+def imread(remote_path, local_path):
+    import cloud_storage
+    cloud_storage.open_file(remote_path, local_path)
+    img = scipy.misc.imread(local_path).astype(np.float)
     if len(img.shape) == 2:
         # grayscale
         img = np.dstack((img,img,img))
@@ -199,8 +202,15 @@ def imread(path):
 
 
 def imsave(path, img):
+    import tempfile
+    import cloud_storage
+
     img = np.clip(img, 0, 255).astype(np.uint8)
-    Image.fromarray(img).save(path, quality=95)
+
+    temp = tempfile.TemporaryFile()
+    Image.fromarray(img).save(temp, quality=95)
+
+    cloud_storage.upload(temp, path)
 
 if __name__ == '__main__':
     main()
